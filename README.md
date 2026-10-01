@@ -1,49 +1,128 @@
-# 概要
-**Walk City（ウォークシティ）**は、散歩を楽しみながら継続することを目指した街づくり型Webアプリです。歩いた量に応じて報酬を獲得し、それを使って自分だけの街を少しずつ発展させていきます。建物や住民が増えることで、日々の運動の成果を目に見える形で感じられる体験を提供します。
+# Walk City
 
-## コア機能
-- Google Healthと連携して歩数を取得し、報酬に換算
-- 街づくり機能
-- 建物の効果による人口の計算
-- 人口ランキング機能
+歩いた量に応じて街が育つ、ウォーキング継続支援Webアプリです。
 
-# ターゲット
-運動不足がちで、「少しは運動しようかなー」と考え始めている若い人の皆さん
+歩数をコインへ変換し、建物や道路を配置して自分の街を発展させます。運動の成果をゲーム内の変化として可視化することで、日々のウォーキングを楽しみながら続けられる体験を目指しました。
 
-# ストーリー
-## なぜこの機能を作ったか
-ウォーキングの「継続」をテーマにアプリを作成した。歩数の取得技術を活用して、何かゲームができれば面白いと考え、街づくりゲームを開発することにした。
+- 公開デモ: [https://walk-city.vercel.app](https://walk-city.vercel.app)
+- 開発時期: 2026年8月
+- 開発形式: Progateハッカソンでのチーム開発
 
-## 開発中苦戦したこと・どうやって乗り越えたか
-バックエンドとフロントエンドの接続の部分で、ドキュメントの整備が甘かったこともあり、かなり手間取ってしまった。
-進め方をどうするか考えていたところ、メンターの方のアドバイスで、接続の担当者を決め、フロントエンドに合わせることで合意して実装することにした。最終的に時間はかかったが接続を行うことができた。
+> [!NOTE]
+> 本リポジトリはチーム開発の成果物です。以下の技術スタックはプロジェクト全体で使用したものであり、個人の担当範囲は「個人の担当範囲」に分けて記載しています。
 
-## 使用したサービスおよびフレームワーク
-### バックエンド
+## 解決したい課題
+
+ウォーキングは成果を実感しにくく、習慣化する前にやめてしまうことがあります。そこで、歩数を街の成長へ結び付け、運動の積み重ねを目に見える形で残せるようにしました。
+
+主な対象は、運動不足を感じているものの、本格的な運動にはまだ踏み出せていない若年層です。
+
+## 主な機能
+
+- Google Healthと連携した歩数の取得
+- 歩数に応じたコインの獲得
+- 建物・道路・川・橋の配置と移動
+- 建物の効果による人口計算
+- 人口ランキング
+- Googleアカウントによるログイン
+- PC・スマートフォン対応
+
+## 技術スタック
+
+### フロントエンド
+
+- TypeScript
+- React
+- Vite
+- Tailwind CSS
+- Vitest / Testing Library
+
+### バックエンド・インフラ
+
 - Supabase Database
-ユーザー、マップ等のプレーデータの保存。RLS (Row Level Security)を利用してセキュリティを確保。
 - Supabase Auth
-Googleアカウントのログインと認証に利用。
-- Edge Functions
-Google Health APIと連携して歩数データの取得。および、データベースへの反映。
+- Supabase Edge Functions
+- PostgreSQL / Row Level Security
 - Google Health API
-歩数データの取得に利用。AppleヘルスケアとGoogle Healthを連携することでクロスプラットフォームを実現。        
+- Vercel
 
-## アーキテクチャー図
- ![image](https://ptera-publish.topaz.dev/project/01M187RHJFY562XDP86F4DHNPA.png)
+Supabaseにはユーザー、街、建物などのデータを保存し、Row Level Securityでユーザーごとのアクセスを制御しています。Edge FunctionsはGoogle Health APIとの連携と歩数データの反映に利用しています。
 
-# チーム開発で工夫したところ
-APIの型・インターフェースを先に定義し、モックAPIを使ってフロントを開発した。バックエンド完成後は、そのインターフェースの実装をSupabase版へ差し替えることで統合した。
-これによってチームメンバーがお互いの実装完了を待たずに作業できた。
+## アーキテクチャ
 
-# 個人の目標
-・yoanz6258
-typescript+reactでモダンなWebフロントエンドに挑戦, チーム開発/githubのきれいな運用
+![Walk Cityのアーキテクチャ図](https://ptera-publish.topaz.dev/project/01M187RHJFY562XDP86F4DHNPA.png)
 
-・unknown19021
-SupabaseとJavaScriptのコードがわかるようにする。
-初めてのバックエンド、共同開発を頑張る
+フロントエンドではAPIの型とインターフェースを先に定義し、モック実装とSupabase実装を`ApiProvider`で切り替えられる構成にしました。これにより、バックエンドの完成を待たずに画面開発とテストを進められます。
 
-・alipirin3272
-初めてフロントエンド開発に挑戦する。新たな技術の習得やGithubを用いた共同作業を頑張る。
-初めて触る技術（typescript+react）を理解し、活用できるようにしたい。
+## チーム開発で工夫したこと
+
+開発途中で、フロントエンドとバックエンドの仕様書に食い違いがあり、接続に時間がかかる問題が発生しました。そこで、接続部分の担当を明確にし、フロントエンド側の型・インターフェースを共通の契約として仕様を整理しました。
+
+また、機能ごとにブランチとPull Requestを作成し、変更内容、確認方法、テスト結果を記録してから統合しました。
+
+## 個人の担当範囲
+
+GitHubユーザー [`Koiguchisyoyu`](https://github.com/Koiguchisyoyu) は、主に次を担当しました。
+
+- マップ機能の仕様整理
+- マップ用の型、モックデータ、配置・移動判定の実装
+- 建物の衝突判定と道路隣接判定
+- タウンマップ中心のダッシュボード
+- マーケット、建物配置・移動、川・橋などのゲーム機能
+- PC・スマートフォン向け画面の調整
+- 複数の設計書に存在したAPI仕様の矛盾整理
+- GitHubのブランチ・Pull Requestを使った変更管理
+
+TypeScriptの実装では生成AIによるコーディング支援を利用し、機能単位でPull Requestを作成しました。Reactの基盤構築とSupabaseバックエンドは、他のチームメンバーが主に担当しています。
+
+### 代表的なPull Request
+
+- [#3 Map基盤の型・モック・配置判定を追加](https://github.com/Megane14916/walk-city/pull/3)
+- [#5 タウンマップ常時表示ダッシュボードを追加](https://github.com/Megane14916/walk-city/pull/5)
+- [#7 マーケットの購入・配置機能を追加](https://github.com/Megane14916/walk-city/pull/7)
+- [#13 川と橋のマップ機能を追加](https://github.com/Megane14916/walk-city/pull/13)
+- [#17 API設計書間の矛盾14件を解消](https://github.com/Megane14916/walk-city/pull/17)
+- [#23 スマートフォン向けヘッダーとマップ操作を改善](https://github.com/Megane14916/walk-city/pull/23)
+- [#26 設定ダイアログにログアウト機能を追加](https://github.com/Megane14916/walk-city/pull/26)
+
+## ローカルでの実行
+
+Supabaseへ接続しなくても、モックデータを使ってフロントエンドを起動できます。
+
+```sh
+git clone https://github.com/Koiguchisyoyu/WalkCity.git
+cd WalkCity/frontend
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+Windows PowerShellでは、`cp`の代わりに次を実行してください。
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+`.env.local`の`VITE_API_MODE`を`mock`にすると、Supabaseの認証情報なしで動作を確認できます。
+
+## テストと品質確認
+
+```sh
+cd frontend
+npm test
+npm run lint
+npm run build
+```
+
+本番接続に関する変更では、テスト、Lint、本番ビルドがすべて成功することを確認してから統合します。
+
+## ディレクトリ構成
+
+```text
+WalkCity/
+├── docs/       # 設計書、API仕様、実装計画
+├── frontend/   # React・TypeScriptフロントエンド
+└── supabase/   # Edge Functions、migration、DBテスト
+```
+
+より詳しいフロントエンドの構成と環境変数については、[frontend/README.md](frontend/README.md)を参照してください。
